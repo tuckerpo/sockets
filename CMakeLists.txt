@@ -5,6 +5,7 @@ set (This Sockets)
 set(Headers
     include/INetConnection.hpp
     include/NetConnection.hpp
+    include/NetServer.hpp
 )
 
 set (Sources
@@ -14,6 +15,7 @@ set (Sources
 if (MSVC)
     list (APPEND Sources
         src/win/NetConnectionWin32.cpp
+        src/win/NetServerWin32.cpp
     )
 endif()
 
