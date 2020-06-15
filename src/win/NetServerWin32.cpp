@@ -67,7 +67,7 @@ bool NetServer::Open(NewConnectionCallback newConnCb, PacketRxCallback rxCb,
     } else {
       socketAddr.sin_addr.S_un.S_addr = ::htonl(localAddr);
     }
-    socketAddr.sin_port = static_cast<USHORT>(::htonl(port));
+    socketAddr.sin_port = ::htons(port);
     if (bind(m_pPlatform->sock, (struct sockaddr*)&socketAddr,
              sizeof(socketAddr)) != 0) {
       fprintf(stderr, "NetServerWin32: ::bind failed: %d\n", WSAGetLastError());
@@ -153,7 +153,7 @@ void NetServer::ProcessingRoutine(NetServer::Mode mode) {
             NetConnection::Platform::MakeConnectionFromExistingSocket(
                 client_socket, boundAddr, boundPort,
                 ::ntohl(peerAddr.sin_addr.S_un.S_addr),
-                ::ntohl(peerAddr.sin_port));
+                ::ntohs(peerAddr.sin_port));
 
         m_newConnCb(connection.get());
       }
@@ -172,7 +172,7 @@ void NetServer::ProcessingRoutine(NetServer::Mode mode) {
       } else if (amountRecvd > 0) {
         local_buffer.resize(amountRecvd);
         m_packetRxCb(::ntohl(peerAddr.sin_addr.S_un.S_addr),
-                     ::ntohl(peerAddr.sin_port), local_buffer);
+                     ::ntohs(peerAddr.sin_port), local_buffer);
       }
     }
     if (!m_pPlatform->out_q.empty()) {
@@ -180,7 +180,7 @@ void NetServer::ProcessingRoutine(NetServer::Mode mode) {
       (void)memset(&peerAddr, 0, sizeof(peerAddr));
       peerAddr.sin_family = AF_INET;
       peerAddr.sin_addr.S_un.S_addr = ::htonl(packet.address);
-      peerAddr.sin_port = ::htonl(packet.port);
+      peerAddr.sin_port = ::htons(packet.port);
       const int amountSent = ::sendto(
           m_pPlatform->sock, (const char*)packet.bytes.data(),
           packet.bytes.size(), 0, (const sockaddr*)&peerAddr, sizeof(peerAddr));
@@ -195,7 +195,7 @@ void NetServer::ProcessingRoutine(NetServer::Mode mode) {
         if (amountSent != packet.bytes.size()) {
           fprintf(stderr,
                   "NetServerWin32: ::sendto truncated packet (%d < %d)\n",
-                  amountSent, packet.bytes.size());
+                  amountSent, static_cast<int>(packet.bytes.size()));
         }
         m_pPlatform->out_q.pop_front();
       }
