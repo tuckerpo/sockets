@@ -16,6 +16,7 @@ if (MSVC)
     list (APPEND Sources
         src/win/NetConnectionWin32.cpp
         src/win/NetServerWin32.cpp
+        src/win/NetUtilsWin32.cpp
     )
 endif()
 

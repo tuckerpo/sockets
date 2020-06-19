@@ -214,7 +214,7 @@ void NetServer::Close(bool reapThread) {
   }
 }
 
-uint16_t NetServer::GetBoundPort() const { return 0xdead; }
+uint16_t NetServer::GetBoundPort() const { return m_boundPort; }
 void NetServer::SendPacket(uint32_t address, uint16_t port,
                            const std::vector<uint8_t>& bytes) {
   std::unique_lock<decltype(m_pPlatform->processingMutex)> sendLock(

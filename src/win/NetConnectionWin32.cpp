@@ -6,7 +6,6 @@ static constexpr std::size_t MAX_READ = 1 << 16;
 static constexpr std::size_t MAX_WRITE = 1 << 16;
 
 NetConnection::NetConnection() : m_pPlatform(new NetConnection::Platform()) {
-  fprintf(stderr, "NetConnection ctor called\n");
   WSAData wsadata;
   if (!WSAStartup(MAKEWORD(2, 0), &wsadata)) m_pPlatform->init = true;
 }

@@ -4,7 +4,6 @@
 #include "NetConnection.hpp"
 
 class NetServer {
-
   // Opaque
   struct Platform;
   Platform* m_pPlatform = nullptr;
@@ -39,4 +38,5 @@ class NetServer {
   void ProcessingRoutine(NetServer::Mode);
   NewConnectionCallback m_newConnCb;
   PacketRxCallback m_packetRxCb;
+  uint16_t m_boundPort;
 };
